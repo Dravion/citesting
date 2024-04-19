@@ -47,7 +47,7 @@
     <Fragment>
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
             <Component Id="HelloWorldExecutable" Guid="*">
-                <File Source="D:\a\citesting\citesting\build\Release\citest.exe" KeyPath="yes" Checksum="yes" />
+                <File Source="D:\a\citesting\citesting\build\citest.exe" KeyPath="yes" Checksum="yes" />
             </Component>
         </ComponentGroup>
     </Fragment>
