@@ -1,0 +1,41 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Install MinGW-w64
+      run: |
+        choco install mingw -y
+
+    - name: Configure and Build
+      run: |
+        mkdir build
+        cd build
+        cmake -G "MinGW Makefiles" ..
+        mingw32-make
+
+    - name: Copy main.wxs to build directory
+      run: |
+        copy main.wxs build
+
+    - name: Package as MSI
+      run: |
+        cd build
+        candle -o .\ main.wxs
+        light -o .\CITest.msi -ext WixUtilExtension -ext WixUIExtension -ext WiXNetFxExtension .\CITest.wixobj -dAppSourceDir=D:\a\citesting\citesting\build																																
+
+    - name: Upload MSI artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: Windows Installer Package
+        path: build/CITest.msi
