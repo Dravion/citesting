@@ -24,14 +24,14 @@ jobs:
         cmake -G "MinGW Makefiles" ..
         mingw32-make
 
-    - name: Copy main.wxs to build directory
+    - name: Copy win_installer.wxs to build directory
       run: |
-        copy main.wxs build
+        copy win_installer.wxs build
 
     - name: Package as MSI
       run: |
         cd build
-        candle -o .\ main.wxs
+        candle -o .\ win_installer.wxs
         light -o .\CITest.msi -ext WixUtilExtension -ext WixUIExtension -ext WiXNetFxExtension .\CITest.wixobj -dAppSourceDir=D:\a\citesting\citesting\build																																
 
     - name: Upload MSI artifact
