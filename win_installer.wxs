@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-    <Product Id="*" Name="CITestInstaller" Language="1033" Version="1.0.0.0" Manufacturer="Dravion" UpgradeCode="da3ebc7c-52a0-4ca2-9ece-cc0f52fe79c4">
+    <Product Id="*" Name="CITestInstaller" Language="1033" Version="1.0.0.0" Manufacturer="YourCompany" UpgradeCode="da3ebc7c-52a0-4ca2-9ece-cc0f52fe79c4">
         <Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
         <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
@@ -8,33 +8,29 @@
         <MediaTemplate EmbedCab="yes" />
 
         <UI>
-            <UIRef Id="WixUI_Minimal" />
-            <TextStyle Id="WixUI_Font_Normal" FaceName="Tahoma" Size="8" />
-            <TextStyle Id="WixUI_Font_Bigger" FaceName="Tahoma" Size="12" />
-            <TextStyle Id="WixUI_Font_Title" FaceName="Tahoma" Size="9" Bold="yes" />
+            <Dialog Id="WelcomeDlg" Width="370" Height="270" Title="[ProductName] Installer" NoMinimize="yes">
+                <Control Id="Banner" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="WixUI_Bmp_Banner" />
+                <Control Id="Description" Type="Text" X="25" Y="70" Width="280" Height="30" Transparent="yes" NoPrefix="yes" Text="Welcome to the [ProductName] Installer." />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                    <Publish Event="NewDialog" Value="InstallDirDlg">1</Publish>
+                </Control>
+            </Dialog>
 
-            <DialogRef Id="WelcomeDlg" />
-            <DialogRef Id="VerifyReadyDlg" />
-            <DialogRef Id="MaintenanceWelcomeDlg" />
-            <DialogRef Id="ProgressDlg" />
-            <DialogRef Id="ResumeDlg" />
-            <DialogRef Id="UserExit" />
+            <Dialog Id="InstallDirDlg" Width="370" Height="270" Title="Setup" NoMinimize="yes">
+                <Control Id="Banner" Type="Bitmap" X="0" Y="0" Width="370" Height="44" Text="WixUI_Bmp_Banner" />
+                <Control Id="Description" Type="Text" X="25" Y="70" Width="280" Height="30" Transparent="yes" NoPrefix="yes" Text="Please select the installation directory." />
+                <Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+                <Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="Back">
+                    <Publish Event="NewDialog" Value="WelcomeDlg">1</Publish>
+                </Control>
+                <Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="Next">
+                    <Publish Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
+                </Control>
+            </Dialog>
 
-            <Publish Dialog="WelcomeDlg" Control="Next" Event="NewDialog" Value="InstallDirDlg">1</Publish>
+            <!-- Weitere Dialoge hier hinzufügen, wie VerifyReadyDlg, etc. -->
 
-            <Publish Dialog="InstallDirDlg" Control="Back" Event="NewDialog" Value="WelcomeDlg">1</Publish>
-            <Publish Dialog="InstallDirDlg" Control="Next" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="InstallDirDlg">1</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">Installed AND NOT PATCH</Publish>
-            <Publish Dialog="VerifyReadyDlg" Control="Back" Event="NewDialog" Value="MaintenanceTypeDlg">Installed AND PATCH</Publish>
-
-            <Publish Dialog="MaintenanceWelcomeDlg" Control="Next" Event="NewDialog" Value="MaintenanceTypeDlg">1</Publish>
-            <Publish Dialog="MaintenanceTypeDlg" Control="RepairButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-            <Publish Dialog="MaintenanceTypeDlg" Control="RemoveButton" Event="NewDialog" Value="VerifyReadyDlg">1</Publish>
-            <Publish Dialog="MaintenanceTypeDlg" Control="Back" Event="NewDialog" Value="MaintenanceWelcomeDlg">1</Publish>
-
-            <!-- <Property Id="ARPPRODUCTICON" Value="dicon_32px_32px.ico" /> -->
         </UI>
 
         <Feature Id="ProductFeature" Title="CITestInstaller" Level="1">
@@ -44,7 +40,7 @@
 
     <Fragment>
         <Directory Id="TARGETDIR" Name="SourceDir">
-            
+            <!-- Using ProgramFiles64Folder instead of ProgramFilesFolder -->
             <Directory Id="ProgramFiles64Folder">
                 <Directory Id="INSTALLFOLDER" Name="CITestInstaller" />
             </Directory>
@@ -53,9 +49,10 @@
 
     <Fragment>
         <ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
-            <Component Id="CITestExecutable" Guid="*">
+            <Component Id="HelloWorldExecutable" Guid="*">
                 <File Source="D:\a\citesting\citesting\build\Release\citest.exe" KeyPath="yes" Checksum="yes" />
             </Component>
         </ComponentGroup>
     </Fragment>
 </Wix>
+
